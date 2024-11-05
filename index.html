@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LaTeX to Typst Converter</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"></script>
+  </head>
+  <body>
+    <h2>LaTeX to Typst Converter</h2>
+    <p>LaTeX数式を入力してください：</p>
+    <textarea
+      id="latex-input"
+      rows="4"
+      cols="50"
+      oninput="updatePreview()"
+    ></textarea>
+    <h3>Typst形式の出力:</h3>
+    <div
+      id="typst-output"
+      style="border: 1px solid #ddd; padding: 10px; min-height: 2em"
+    ></div>
+    <h3>プレビュー（KaTeX表示）:</h3>
+    <div
+      id="katex-preview"
+      style="border: 1px solid #ddd; padding: 10px; min-height: 2em"
+    ></div>
+
+    <script type="module">
+      import { texToTypst } from "https://cdn.jsdelivr.net/npm/tex-to-typst@latest/+esm";
+
+      window.updatePreview = function () {
+        const latexInput = document.getElementById("latex-input").value;
+        const previewElement = document.getElementById("katex-preview");
+        const typstOutput = document.getElementById("typst-output");
+
+        try {
+          // KaTeXで数式を表示（ディスプレイスタイルに設定）
+          previewElement.innerHTML = ""; // 以前の出力をクリア
+          katex.render(latexInput, previewElement, { displayMode: true });
+          // tex-to-typstでTypst形式に変換
+          const typst = texToTypst(latexInput).value;
+          typstOutput.textContent = typst;
+        } catch (error) {
+          // エラー詳細を表示
+          previewElement.innerHTML = "エラー: " + error.message;
+          typstOutput.textContent = "";
+        }
+      };
+    </script>
+  </body>
+</html>
